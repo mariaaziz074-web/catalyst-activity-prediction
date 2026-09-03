@@ -1,194 +1,388 @@
 # Catalyst Activity Prediction
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)](https://streamlit.io/)
+[![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/Tests-19%20passed-brightgreen.svg)](#testing)
+[![Streamlit](https://img.shields.io/badge/App-Streamlit-red.svg)](https://streamlit.io/)
 
-A machine learning web application for predicting catalyst activity based on chemical descriptors. Built with reproducibility and open science principles.
+A reproducible machine-learning workflow for predicting catalyst activity from catalyst descriptors and reaction conditions.
+
+The project combines a structured scientific dataset, preprocessing, a trained machine-learning model, model documentation, automated tests, and an interactive Streamlit application.
+
+---
 
 ## Overview
 
-This application uses a pre-trained ML model to predict catalyst activity (%) based on:
+Catalyst performance depends on a combination of material properties and reaction conditions. Machine learning can help identify relationships between these variables and measured catalytic activity.
 
-| Feature | Unit | Description | Typical Range |
-|---------|------|-------------|---------------|
-| Metal | - | Catalyst metal type | Categorical |
-| Surface Area | m²/g | BET specific surface area | 10-500 |
-| Band Gap | eV | Electronic band gap energy | 0.5-5.0 |
-| Particle Size | nm | Average crystallite size (XRD) | 5-100 |
-| Pore Volume | cm³/g | Total pore volume (BJH method) | 0.1-2.0 |
-| Temperature | °C | Reaction temperature | 20-200 |
-| pH | - | Solution pH | 1-14 |
-| Reaction Time | min | Reaction duration | 10-300 |
+This project demonstrates an end-to-end scientific machine-learning workflow:
 
-## Scientific Background
+1. Prepare a structured catalyst dataset.
+2. Encode categorical catalyst information.
+3. Train a machine-learning regression model.
+4. Evaluate predictive performance.
+5. Inspect feature importance.
+6. Save the trained model and encoder.
+7. Provide an interactive prediction interface.
+8. Document the dataset, model, limitations, and reproducibility workflow.
 
-Catalyst activity prediction enables:
-- **Materials Discovery**: Accelerating identification of novel catalysts
-- **Process Optimization**: Finding optimal reaction conditions
-- **Sustainable Chemistry**: Reducing experimental waste
+The project is designed as a **reproducibility-first scientific ML example**, rather than a claim of universal catalyst-performance prediction.
 
-Key descriptors influencing catalytic performance:
-- **Electronic properties**: Band gap affects charge carrier dynamics
-- **Structural properties**: Surface area and particle size determine active sites
-- **Textural properties**: Pore volume influences mass transfer
-- **Reaction conditions**: Temperature, pH, and time control kinetics
+---
 
-## Project Structure
+## Scientific Problem
 
-```
-catalyst-activity/
-├── app.py                      # Main Streamlit application
-├── catalyst_model.pkl          # Pre-trained ML model
-├── metal_encoder.pkl           # Label encoder for metals
-├── requirements.txt            # Python dependencies
-├── environment.yml             # Conda environment
-├── Dockerfile                  # Container definition
-├── docker-compose.yml          # Docker orchestration
-├── setup.py                    # Package setup
-├── README.md                   # This file
-├── LICENSE                     # MIT License
-├── CITATION.cff                # Citation metadata
-├── .gitignore                  # Git ignore rules
-├── .streamlit/
-│   └── config.toml             # Streamlit config
+The objective is to predict measured catalyst activity from a set of catalyst descriptors and experimental conditions.
+
+### Input Variables
+
+| Variable       |  Unit | Role    | Description                                  |
+| -------------- | ----: | ------- | -------------------------------------------- |
+| `Metal`        |     — | Feature | Metal used as the active catalytic component |
+| `SurfaceArea`  |  m²/g | Feature | Specific surface area                        |
+| `BandGap`      |    eV | Feature | Electronic band-gap energy                   |
+| `ParticleSize` |    nm | Feature | Average particle or crystallite size         |
+| `PoreVolume`   | cm³/g | Feature | Total pore volume                            |
+| `Temperature`  |    °C | Feature | Reaction temperature                         |
+| `pH`           |     — | Feature | Reaction-solution pH                         |
+| `Time`         |   min | Feature | Reaction duration                            |
+| `Activity`     |     % | Target  | Measured catalyst activity                   |
+
+---
+
+## Dataset
+
+The current dataset contains:
+
+* **15 observations**
+* **9 columns**
+* **7 metal categories**
+* **8 predictor variables**
+* **1 continuous target variable**
+
+The dataset should be considered a **small proof-of-concept scientific ML dataset**.
+
+Because of the limited sample size, model performance should be interpreted cautiously and predictions should not be assumed to generalize beyond the represented chemical and experimental domain.
+
+See:
+
+* [`catalyst_data.csv`](catalyst_data.csv)
+* [`data/README.md`](data/README.md)
+* [`data/data_dictionary.md`](data/data_dictionary.md)
+
+---
+
+## Model Performance
+
+The current model achieves:
+
+| Metric |                        Value |
+| ------ | ---------------------------: |
+| R²     |                   **0.8161** |
+| MAE    | **2.4933 percentage points** |
+
+These values describe performance for the current dataset and modeling workflow.
+
+They should **not** be interpreted as evidence that the model will achieve the same performance on unseen catalyst systems or independent experimental datasets.
+
+### Important Considerations
+
+Model performance may be affected by:
+
+* Small dataset size
+* Experimental variability
+* Limited feature representation
+* Catalyst-specific effects
+* Distribution differences between training data and new systems
+* Unrepresented reaction variables
+
+Independent experimental validation is recommended before using predictions for research decisions.
+
+---
+
+## Repository Structure
+
+```text
+catalyst-activity-prediction/
+│
+├── activity_prediction.ipynb
+├── app.py
+├── catalyst_data.csv
+├── catalyst_model.pkl
+├── metal_encoder.pkl
+│
 ├── data/
-│   ├── README.md               # Data documentation
-│   └── data_dictionary.md      # Feature descriptions
+│   ├── README.md
+│   └── data_dictionary.md
+│
 ├── models/
+│   ├── feature_importance.csv
+│   └── model_card.md
+│
+├── tests/
+│   ├── __init__.py
+│   ├── test_app.py
+│   └── test_model.py
+│
+├── docs/
+│   ├── CHANGELOG.md
+│   └── CONTRIBUTING.md
+│
+├── CITATION.cff
+├── Dockerfile
+├── environment.yml
+├── requirements.txt
+├── setup.py
+├── LICENSE
+└── .gitignore
+```
+
+---
+
+## Interactive Application
+
+The repository includes an interactive Streamlit application for generating catalyst-activity predictions.
+
+### Run Locally
+
+Install the dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Then launch the application:
+
+```bash
+streamlit run app.py
+```
+
+The application allows users to enter:
+
+* Metal
+* Surface area
+* Band gap
+* Particle size
+* Pore volume
+* Temperature
+* pH
+* Reaction time
+
+and obtain a model prediction.
+
+---
 
 ## Installation
 
-### Option 1: Using pip
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/catalyst-activity.git
-   cd catalyst-activity
-   ```
-
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   # On Windows
-   venv\Scripts\activate
-   # On macOS/Linux
-   source venv/bin/activate
-   ```
-
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-### Option 2: Using Conda (Recommended)
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/catalyst-activity.git
-   cd catalyst-activity
-   ```
-
-2. Create conda environment:
-   ```bash
-   conda env create -f environment.yml
-   conda activate catalyst-activity
-   ```
-
-### Option 3: Using Docker
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/catalyst-activity.git
-   cd catalyst-activity
-   ```
-
-2. Build and run:
-   ```bash
-   docker-compose up --build
-   ```
-
-3. Open browser at `http://localhost:8501`
-
-## Usage
-
-1. Ensure model files (`catalyst_model.pkl` and `metal_encoder.pkl`) are in project root.
-
-2. Run the application:
-   ```bash
-   streamlit run app.py
-   ```
-
-3. Navigate to `http://localhost:8501` in your browser.
-
-4. Input catalyst parameters and click **Predict Activity**.
-
-## Model Documentation
-
-See [models/model_card.md](models/model_card.md) for:
-- Model architecture and algorithm
-- Training methodology
-- Performance metrics
-- Limitations and intended use
-
-## Reproducibility
-
-This project follows FAIR principles:
-
-1. **Version Pinning**: All dependencies pinned to specific versions
-2. **Environment Files**: Both `requirements.txt` and `environment.yml` provided
-3. **Containerization**: Dockerfile ensures identical execution environment
-4. **Notebooks**: Complete training pipeline in Jupyter notebooks
-5. **Tests**: Unit tests validate functionality
-6. **Model Card**: Comprehensive model documentation
-
-## Running Tests
+### Option 1 — pip
 
 ```bash
-pip install pytest pytest-cov
-pytest tests/ -v
-pytest tests/ --cov=app --cov-report=html
+git clone https://github.com/mariaaziz074-web/catalyst-activity-prediction.git
+cd catalyst-activity-prediction
+pip install -r requirements.txt
 ```
 
-## Performance Metrics
+Then:
 
-| Metric | Value |
-|--------|-------|
-| R² Score | 0.XX |
-| RMSE | X.XX% |
-| MAE | X.XX% |
-| CV Score | 0.XX ± 0.XX |
-
-*Update with actual model performance metrics*
-
-## Citation
-
-```bibtex
-@software{catalyst_activity_2024,
-  author = {Author Name},
-  title = {Catalyst Activity Prediction using Machine Learning},
-  year = {2024},
-  url = {https://github.com/yourusername/catalyst-activity}
-}
+```bash
+streamlit run app.py
 ```
 
-See [CITATION.cff](CITATION.cff) for full citation information.
+### Option 2 — Conda
+
+```bash
+conda env create -f environment.yml
+conda activate catalyst-activity-prediction
+```
+
+Then:
+
+```bash
+streamlit run app.py
+```
+
+### Option 3 — Docker
+
+Build the image:
+
+```bash
+docker build -t catalyst-activity-prediction .
+```
+
+Run the container according to the port configuration defined by the Dockerfile.
+
+---
+
+## Reproducing the Analysis
+
+The primary analysis workflow is provided in:
+
+[`activity_prediction.ipynb`](activity_prediction.ipynb)
+
+The notebook contains the analysis and modeling workflow used to develop the prediction model.
+
+For reproducibility, users should run the notebook in the documented Python environment rather than assuming that a previously saved model is interchangeable with a newly trained model.
+
+---
+
+## Model Files
+
+The repository includes the trained model and categorical encoder used by the application:
+
+```text
+catalyst_model.pkl
+metal_encoder.pkl
+```
+
+Additional model documentation is available in:
+
+[`models/model_card.md`](models/model_card.md)
+
+Feature-importance results are available in:
+
+[`models/feature_importance.csv`](models/feature_importance.csv)
+
+---
+
+## Testing
+
+The repository includes automated tests using `pytest`.
+
+Run:
+
+```bash
+pytest -q
+```
+
+The current test suite contains **19 tests**.
+
+A successful run should report:
+
+```text
+19 passed
+```
+
+You can also check Python syntax with:
+
+```bash
+python -m py_compile app.py
+```
+
+---
+
+## Data Documentation
+
+Detailed information about the dataset is available in:
+
+* [`data/README.md`](data/README.md)
+* [`data/data_dictionary.md`](data/data_dictionary.md)
+
+The data documentation describes the variables, units, roles, preprocessing, data-quality considerations, provenance limitations, and responsible-use considerations.
+
+---
+
+## Limitations
+
+This project has several important limitations.
+
+### Small Dataset
+
+The dataset contains only 15 observations. This substantially limits the statistical strength and generalizability of the model.
+
+### Limited Chemical Representation
+
+Catalyst activity can depend on variables not represented in the current feature set, including:
+
+* Catalyst synthesis conditions
+* Surface chemistry
+* Crystal structure
+* Active-site characteristics
+* Reaction mechanism
+* Solvent
+* Substrate identity
+* Irradiation conditions
+* Reactor configuration
+* Measurement protocol
+
+### Extrapolation Risk
+
+Predictions outside the feature ranges represented in the dataset may be unreliable.
+
+### Correlation Does Not Imply Causation
+
+Feature importance and predictive relationships should not automatically be interpreted as causal chemical mechanisms.
+
+### Experimental Validation
+
+Machine-learning predictions should be treated as computational estimates and hypotheses rather than replacements for experimental measurements.
+
+---
+
+## Intended Use
+
+This project is intended for:
+
+* Scientific machine-learning education
+* Exploratory catalyst analysis
+* Reproducible computational workflows
+* Model-development demonstrations
+* Hypothesis generation
+* Scientific software and portfolio demonstration
+
+It is **not intended to replace experimental catalyst characterization or validation**.
+
+---
+
+## Reproducibility Philosophy
+
+The project follows a simple principle:
+
+> A scientific ML result is more useful when the data, preprocessing, model, evaluation, tests, and limitations are documented together.
+
+The repository therefore keeps the analysis notebook, trained artifacts, tests, data documentation, model documentation, and application code together.
+
+---
 
 ## Contributing
 
-Read our [Contributing Guidelines](docs/CONTRIBUTING.md) before submitting a pull request.
+Contributions are welcome.
+
+Before submitting changes:
+
+1. Keep scientific calculations reproducible.
+2. Avoid undocumented changes to the dataset.
+3. Add or update tests when appropriate.
+4. Document changes that affect model behavior.
+5. Run the test suite before submitting a pull request.
+
+See [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
+
+---
+
+## Citation
+
+If you use this repository in research, teaching, or derivative work, please see [`CITATION.cff`](CITATION.cff) for citation information.
+
+---
 
 ## License
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE).
+This project is released under the MIT License.
 
-## Acknowledgments
+See [`LICENSE`](LICENSE) for details.
 
-- Built with [Streamlit](https://streamlit.io/)
-- ML powered by [Scikit-learn](https://scikit-learn.org/)
-- Data analysis with [Pandas](https://pandas.pydata.org/)
+---
 
-## Contact
+## Author
 
-For questions or feedback, please open an issue on GitHub.
+**Maria Aziz**
 
+Computational Chemistry | Scientific Machine Learning | Data-Driven Materials Research
+
+---
+
+## Repository
+
+GitHub:
+
+https://github.com/mariaaziz074-web/catalyst-activity-prediction
