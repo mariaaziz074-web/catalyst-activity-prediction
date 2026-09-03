@@ -1,0 +1,9 @@
+Feature,Importance,Description
+Metal,0.XX,Encoded metal type
+SurfaceArea,0.XX,BET surface area
+BandGap,0.XX,Electronic band gap
+ParticleSize,0.XX,Crystallite size
+PoreVolume,0.XX,Total pore volume
+Temperature,0.XX,Reaction temperature
+pH,0.XX,Solution pH
+Time,0.XX,Reaction time

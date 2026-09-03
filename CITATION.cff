@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "Catalyst Activity Prediction using Machine Learning"
+abstract: >
+  A machine learning web application built with Streamlit for predicting
+  catalyst activity based on various chemical descriptors. This tool uses
+  physicochemical properties to predict catalytic performance, enabling
+  faster materials discovery and process optimization.
+authors:
+  - family-names: "Your Last Name"
+    given-names: "Your First Name"
+    email: "your.email@example.com"
+    affiliation: "Your Institution"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+repository-code: "https://github.com/yourusername/catalyst-activity"
+url: "https://github.com/yourusername/catalyst-activity"
+license: MIT
+version: 1.0.0
+date-released: 2024-01-01
+keywords:
+  - catalyst
+  - machine learning
+  - activity prediction
+  - cheminformatics
+  - materials science
+  - streamlit
+  - computational chemistry
+contact:
+  - email: "your.email@example.com"
+    affiliation: "Your Institution"
+preferred-citation:
+  type: article
+  title: "Machine Learning Approach for Predicting Catalyst Activity"
+  authors:
+    - family-names: "Your Last Name"
+      given-names: "Your First Name"
+  journal: "Journal Name"
+  year: 2024
+  volume: "X"
+  issue: "Y"
+  pages: "Z"
+  doi: "10.xxxx/xxxxx"
